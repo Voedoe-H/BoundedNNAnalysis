@@ -1,6 +1,7 @@
 from intervals import *
 from interval_analysis import *
 from monte_carlo_analysis import *
+from visualization import *
 
 import onnx
 import onnxruntime as ort
@@ -52,6 +53,8 @@ def interval_analysis_example(model):
     for j in range(len(res)):
         print(f"Output interval for neuron {j}: ({res[j].lower}, {res[j].upper})")
 
+    return res
+
 def monte_carlo_analysis_example(model_path):
     """
         Example function for the monte carlo analysis based on the small_nn model
@@ -63,6 +66,7 @@ def monte_carlo_analysis_example(model_path):
     for j in range(len(res)):
         print(f"Output interval for neuron {j}: ({res[j].lower}, {res[j].upper})")
 
+    return res
 
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if needed
@@ -73,7 +77,10 @@ if __name__ == "__main__":
     print("ONNX model is valid!")
 
     # Example interval analysis replace with your code here
-    interval_analysis_example(onnx_model)
+    interval_results = interval_analysis_example(onnx_model)
 
     # Example monte carlo analysis replace with your code here
-    monte_carlo_analysis_example(model_path)
+    monte_carlo_results = monte_carlo_analysis_example(model_path)
+
+    # Some simple visualizaiton option example
+    interval_set_comparison(interval_results[:2],monte_carlo_results[:2],"interval analysis","monte carlo analysis")

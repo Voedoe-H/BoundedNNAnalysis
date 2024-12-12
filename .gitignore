@@ -4,3 +4,4 @@
 /src/interval_analysis/__pycache__
 src/small_nn.onnx
 /src/monte_carlo_analysis/__pycache__
+/src/visualization/__pycache__
