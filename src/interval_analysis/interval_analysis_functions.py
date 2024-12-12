@@ -1,7 +1,7 @@
 import onnx
 import onnxruntime as ort
 import matplotlib.pyplot as plt
-
+from intervals import *
 
 def gemm_layer(input_intervals, weights, biases):
     """

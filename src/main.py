@@ -38,6 +38,16 @@ def example_model_generator():
         dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}}
     )
 
+def interval_analysis_example(model):
+    """
+        Example function utilizing the small_nn model
+    """
+    # First off we need to define what inputs we want to analyse:
+    inputs =  [Interval(0.0, 1.0) for _ in range(4)] # Input regions are dependend on what scenarios need to be looked at
+    res = parseONNXModel(model,inputs) # Actual forward passing the intervals through the NN with res being a list of interval objects
+    for j in range(len(res)):
+        print(f"Output interval for neuron {j}: ({res[j].lower}, {res[j].upper})")
+
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if needed
     model_path = "small_nn.onnx" # Path to the onnx model, defaulted to the generated small_nn.onnx model
@@ -45,3 +55,6 @@ if __name__ == "__main__":
 
     onnx.checker.check_model(onnx_model)
     print("ONNX model is valid!")
+
+    # Example interval analysis replace with your code here
+    interval_analysis_example(onnx_model)
