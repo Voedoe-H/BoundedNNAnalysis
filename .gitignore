@@ -1,3 +1,5 @@
 
 /src/intervals/__pycache__
 /venv
+/src/interval_analysis/__pycache__
+src/small_nn.onnx
