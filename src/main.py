@@ -47,8 +47,22 @@ def interval_analysis_example(model):
     # First off we need to define what inputs we want to analyse:
     inputs =  [Interval(0.0, 1.0) for _ in range(4)] # Input regions are dependend on what scenarios need to be looked at
     res = parseONNXModel(model,inputs) # Actual forward passing the intervals through the NN with res being a list of interval objects
+    print("-"*50)
+    print("Interval Analysis Results:")
     for j in range(len(res)):
         print(f"Output interval for neuron {j}: ({res[j].lower}, {res[j].upper})")
+
+def monte_carlo_analysis_example(model_path):
+    """
+        Example function for the monte carlo analysis based on the small_nn model
+    """
+    input_range = (0, 1)
+    res = nn_montecarlo(input_range,10000,4,model_path)
+    print("-"*50)
+    print("Monte Carlo Analysis Results:")
+    for j in range(len(res)):
+        print(f"Output interval for neuron {j}: ({res[j].lower}, {res[j].upper})")
+
 
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if needed
@@ -60,3 +74,6 @@ if __name__ == "__main__":
 
     # Example interval analysis replace with your code here
     interval_analysis_example(onnx_model)
+
+    # Example monte carlo analysis replace with your code here
+    monte_carlo_analysis_example(model_path)
