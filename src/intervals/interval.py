@@ -1,5 +1,21 @@
 import numpy as np
 
+# General Helper functions, functions that are used in the interval class but not actually a member of it
+def sigmoid(x):
+    """
+        Basic sigmoid function over the real valued variables x
+    """
+    return 1/(1+np.exp(-x))
+
+def softplus(x):
+    """
+        Basic softplus activation function over real valued variables x
+    """
+    return np.log(1 + np.exp(x))
+
+
+
+# Core class
 class Interval:
     def __init__(self, lower, upper):
         self.lower = lower
@@ -37,17 +53,24 @@ class Interval:
         return Interval(max(0, self.lower), max(0, self.upper))
 
     def sigmoid(self):
-        # TODO implement sigmoid activation function 
-        pass
+        """
+            Sigmoid activation function. Implemented through evaluating lower and upper value with standard real value sigmoid function,
+            due to the fact it is montonic.
+        """
+        return Interval(sigmoid(self.lower),sigmoid(self.upper))
 
     def tanh(self):
-        # TODO implement tangens hyperbolicus activation function
+        # TODO implement tangens hyperbolicus activation function, On hold due to non monotonic function
         pass
 
     def softplus(self):
-        # TODO implement softplus activation function
-        pass
+        """
+            Softplus activation function. Montonic thus simple implementaiton
+        """
+        return Interval(softplus(self.lower),softplus(self.upper))
     
     def exp(self):
-        # TODO implement exponential activation function
-        pass
+        """
+            Exponential activation function
+        """
+        return Interval(np.exp(self.lower),np.exp(self.upper))
