@@ -35,3 +35,19 @@ class Interval:
 
     def relu(self):
         return Interval(max(0, self.lower), max(0, self.upper))
+
+    def sigmoid(self):
+        # TODO implement sigmoid activation function 
+        pass
+
+    def tanh(self):
+        # TODO implement tangens hyperbolicus activation function
+        pass
+
+    def softplus(self):
+        # TODO implement softplus activation function
+        pass
+    
+    def exp(self):
+        # TODO implement exponential activation function
+        pass

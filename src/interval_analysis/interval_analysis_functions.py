@@ -22,6 +22,14 @@ def gemm_layer(input_intervals, weights, biases):
         outputs.append(out)
     return outputs
 
+def convolution_layer():
+    # TODO managae convolution layer
+    pass
+
+def reshape_layer():
+    # TODO manage reshape layer
+    pass
+
 def parseONNXModel(model,inputs):
     """
         Core Interval analysis function that parses through a given onnx model. It does a complete forward pass of the given onnx model
