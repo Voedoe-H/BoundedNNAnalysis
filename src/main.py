@@ -7,6 +7,64 @@ import onnx
 import onnxruntime as ort
 import torch
 import torch.nn as nn
+from onnx import helper, TensorProto
+
+def constant_layer():
+    """
+        Playing with constant layer
+    """
+
+    constant_tensor = onnx.helper.make_tensor(
+        name="constant_value",
+        data_type=TensorProto.FLOAT,
+        dims=[4],  # Flattened shape
+        vals=[1.0, 2.0, 3.0, 4.0],  # Values
+    )
+
+    # Define the Constant node
+    constant_node = onnx.helper.make_node(
+        "Constant",
+        inputs=[],  # No inputs
+        outputs=["output_tensor"],
+        value=constant_tensor,  # Constant tensor
+    )
+
+    # Define the graph
+    graph = helper.make_graph(
+        nodes=[constant_node],
+        name="ConstantGraph",
+        inputs=[],  # No inputs required for this model
+        outputs=[
+            helper.make_tensor_value_info(
+                name="output_tensor",
+                elem_type=TensorProto.FLOAT,
+                shape=[4],  # Flattened output shape
+            )
+        ],
+    )
+
+    # Define the model
+    model = helper.make_model(graph, producer_name="onnx-example")
+
+    parseONNXModel(model,[])
+    
+def tensor_testing():
+    """
+        Playing Interval Tensors
+    """
+    tensor = [
+        [  # Channel 1
+            [Interval(1, 2), Interval(3, 4)],  # Row 1
+            [Interval(5, 6), Interval(7, 8)]   # Row 2
+        ],
+        [  # Channel 2
+            [Interval(9, 10), Interval(11, 12)],  # Row 1
+            [Interval(13, 14), Interval(15, 16)]  # Row 2
+        ]
+    ]
+    intervalTensor = IntervalTensor(tensor)
+    print(intervalTensor.tensor_dimensions())
+    print(intervalTensor.flattened_tensor())
 
 def example_model_generator():
     """
@@ -60,7 +118,7 @@ def monte_carlo_analysis_example(model_path):
         Example function for the monte carlo analysis based on the small_nn model
     """
     input_range = (0, 1)
-    res = nn_montecarlo(input_range,10000,4,model_path)
+    res = nn_montecarlo(input_range,100000,4,model_path)
     print("-"*50)
     print("Monte Carlo Analysis Results:")
     for j in range(len(res)):
@@ -73,8 +131,8 @@ if __name__ == "__main__":
     model_path = "small_nn.onnx" # Path to the onnx model, defaulted to the generated small_nn.onnx model
     onnx_model = onnx.load(model_path)
 
-    onnx.checker.check_model(onnx_model)
-    print("ONNX model is valid!")
+    #onnx.checker.check_model(onnx_model)
+    #print("ONNX model is valid!")
 
     # Example interval analysis replace with your code here
     interval_results = interval_analysis_example(onnx_model)
@@ -84,3 +142,6 @@ if __name__ == "__main__":
 
     # Some simple visualizaiton option example
     interval_set_comparison(interval_results[:2],monte_carlo_results[:2],"interval analysis","monte carlo analysis")
+    
+    #constant_layer()
+    #tensor_testing()

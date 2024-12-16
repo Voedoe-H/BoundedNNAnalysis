@@ -7,12 +7,10 @@ def gemm_layer(input_intervals, weights, biases):
     """
         Function handling a typical gemm layer
     """
-    print(f"weights: {weights}")
     outputs = []
     for i in range(len(biases)):
         out = Interval(0.0,0.0)
         out = out + biases[i]
-        print(f"len of weights: {len(weights[i])}")
         for j in range(len(weights[i])):
             out = out + input_intervals[j] * weights[i][j]
         outputs.append(out)
@@ -39,7 +37,6 @@ def parseONNXModel(model,inputs):
 
         # Gemm Layer
         if node.op_type == "Gemm":
-            print("Linear type case")
             weights_name = node.input[1]
             biases_name = node.input[2] if len(node.input) > 2 else None
             
@@ -48,24 +45,21 @@ def parseONNXModel(model,inputs):
 
             x = gemm_layer(x,weights,biases)
 
-            print(f"weights: {weights}")
-            print(f"biases: {biases}")
-
         # Relu Layer
         elif node.op_type == "Relu":
             x = [inv.relu() for inv in x ]
 
         # Sigmoid Layer
         elif node.op_type == "Sigmoid":
-            pass
+            x = [inv.sigmoid() for inv in x]
         
         # Softplus Layer
         elif node.op_type == "Softplus":
-            pass
+            x = [inv.softplus() for inv in x]
         
         # Exponential Layer
         elif node.op_type == "Exp":
-            pass
+            x = [inv.exp() for inv in x]
         
         # Constant Layer
         elif node.op_type == "Constant":
