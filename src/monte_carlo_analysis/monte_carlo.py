@@ -55,3 +55,25 @@ def nn_montecarlo(input_range,runs,input_layer_size,model_path):
         result_intervals.append(Interval(mins[j],maxs[j]))
     
     return result_intervals
+
+def basic_montecarlo(input_range,runs,input_layer_size,model_path):
+    """
+        Basic Monte Carlo that retusn the just the set of result output vectors
+    """
+    # Create the onnx session for forward propagation
+    session = ort.InferenceSession(model_path)
+    input_name = session.get_inputs()[0].name
+    input_shape = session.get_inputs()[0].shape
+
+    # Draw the input vectors from the defined input range
+    random_inputs = np.random.uniform(input_range[0], input_range[1], size=(runs, input_layer_size)).astype(np.float32) 
+    
+    # Forward propagation of all the drawn inputs
+    results = []
+    for j in range(runs):
+        input_data = random_inputs[j].reshape(1, -1)
+        output = session.run(None, {input_name: input_data})[0]
+        results.append(output)
+    results = np.array(results)
+
+    return results

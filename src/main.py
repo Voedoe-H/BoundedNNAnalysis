@@ -66,6 +66,17 @@ def tensor_testing():
     print(intervalTensor.tensor_dimensions())
     print(intervalTensor.flattened_tensor())
 
+    tensor1 = IntervalTensor(
+        [Interval(1, 2), Interval(3, 4)]
+        )
+    tensor2 = IntervalTensor([Interval(5, 6), Interval(7, 8)])
+    res_add = tensor1 + tensor2
+    res_sub = tensor1 - tensor2
+    res_mul = tensor1 * tensor2
+    print(res_add.data)
+    print(res_sub.data)
+    print(res_mul.data)
+
 def example_model_generator():
     """
         Function generating a very small NN with torch to test
@@ -126,13 +137,26 @@ def monte_carlo_analysis_example(model_path):
 
     return res
 
+def basic_monte_carlo(model_path):
+    """
+    """
+    input_range = (0,1)
+    res = basic_montecarlo(input_range,10000,785,model_path)
+
+    twoDRes = []
+    for vec in res:
+        twoDRes.append(vec[0])
+    scatter_montecarlo(twoDRes)
+
 if __name__ == "__main__":
-    #example_model_generator()   #Generate test model if needed
+    #example_model_generator()   #Generate test model if neede
+    minst_path = "mnist_mlp_noreshape.onnx"
     model_path = "small_nn.onnx" # Path to the onnx model, defaulted to the generated small_nn.onnx model
     onnx_model = onnx.load(model_path)
-
-    #onnx.checker.check_model(onnx_model)
-    #print("ONNX model is valid!")
+    #mnist_model = onnx.load(minst_path)
+    onnx.checker.check_model(onnx_model)
+    #onnx.checker.check_model(mnist_model)
+    print("ONNX model is valid!")
 
     # Example interval analysis replace with your code here
     interval_results = interval_analysis_example(onnx_model)
@@ -141,7 +165,9 @@ if __name__ == "__main__":
     monte_carlo_results = monte_carlo_analysis_example(model_path)
 
     # Some simple visualizaiton option example
-    interval_set_comparison(interval_results[:2],monte_carlo_results[:2],"interval analysis","monte carlo analysis")
-    
+    #interval_set_comparison(interval_results[:2],monte_carlo_results[:2],"interval analysis","monte carlo analysis","Output Intervals: Interval Analysis vs Monte Carlo")
+    #basic_monte_carlo(mnist_model)
     #constant_layer()
     #tensor_testing()
+
+    

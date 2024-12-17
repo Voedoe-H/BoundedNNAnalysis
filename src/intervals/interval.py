@@ -25,6 +25,9 @@ class Interval:
         return f"[{self.lower}, {self.upper}]"
 
     def __add__(self, other):
+        """
+            Overloaded Addition
+        """
         if isinstance(other,Interval):
             return Interval(self.lower + other.lower, self.upper + other.upper)
         elif isinstance(other,(int,float, np.float32)):
@@ -32,7 +35,21 @@ class Interval:
         else:
             raise TypeError(f"Unssupported operant type for +: 'Interval' and '{type(other).__name__}")
     
+    def __sub__(self,other):
+        """
+            Overloaded Subtraction
+        """
+        if isinstance(other,Interval):
+            return Interval(self.lower - other.lower, self.upper - self.lower)
+        elif isinstance(other,(int,float, np.float32)):
+            return Interval(self.lower-other,self.upper-other)
+        else:
+            raise TypeError(f"UNsopported operant type for -: 'Interval' and '{type(other).__name__}'")
+
     def __mul__(self, other):
+        """
+            Overloaded Multiplication
+        """
         if isinstance(other,Interval):
             bounds = [
                 self.lower * other.lower,

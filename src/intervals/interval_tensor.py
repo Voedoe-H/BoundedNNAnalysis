@@ -2,6 +2,9 @@
 from .interval import Interval
 
 def get_tensor_shape(tensor):
+    """
+        Simple Shape Analysis of the tensor saved in the IntervalTensor Object
+    """
     if isinstance(tensor,list):
         if len(tensor) == 0:
             return [0]
@@ -10,6 +13,9 @@ def get_tensor_shape(tensor):
         return []
     
 def get_flatten_tensor(tensor):
+    """
+        Simple Flattening function of the tensor saved in the IntervalTensor Object
+    """
     if isinstance(tensor,list):
         return [elem for sublist in tensor for elem in get_flatten_tensor(sublist)]
     else :
@@ -38,18 +44,47 @@ class IntervalTensor:
 
     def __add__(self,other):
         """
-            Basic addition between two IntervalTensors
+            Overloaded basic elementwise addition between two IntervalTensors
         """
-        # Check if the shapes are equivalent
-        self.check_elementwise_shape_compatability(other)
-        
         if isinstance(other,IntervalTensor):
-            pass
+            # Check if the shapes are compatible, need to be equivalent
+            self.check_elementwise_shape_compatability(other)
+            return IntervalTensor(self._elementwise_op(self.data,other.data, lambda x,y: x+y))
         else:
-            raise ValueError("Unsopported")
+            raise ValueError("Unsupported")
+
+
+    def __sub__(self,other):
+        """
+            Overloaded basic elementwise subtraction between two IntervalTensors
+        """
+        if isinstance(other,IntervalTensor):
+            # Check if the shapes are compatible, need to be equivalent
+            self.check_elementwise_shape_compatability(other)
+            return IntervalTensor(self._elementwise_op(self.data,other.data, lambda x,y: x-y))
+        else:
+            raise ValueError("Unsupported")
+
+    def __mul__(self,other):
+        """
+            Overloaded basic elementwise multiplication
+        """
+        if isinstance(other,IntervalTensor):
+            # Check if the shapes are compatible, need to be equivalent
+            self.check_elementwise_shape_compatability(other)
+            return IntervalTensor(self._elementwise_op(self.data,other.data, lambda x,y: x*y))
+        else:
+            raise ValueError("Unsupported")
+    
 
     def tensor_dimensions(self):
+        """
+            Returns the shape of the saved tensor
+        """
         return get_tensor_shape(self.data)
 
     def flattened_tensor(self):
+        """
+            Returns the saved tensor flattened
+        """
         return get_flatten_tensor(self.data)
