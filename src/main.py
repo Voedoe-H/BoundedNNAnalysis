@@ -2,7 +2,7 @@ from intervals import *
 from interval_analysis import *
 from monte_carlo_analysis import *
 from visualization import *
-
+import numpy as np
 import onnx
 import onnxruntime as ort
 import torch
@@ -124,6 +124,57 @@ def interval_analysis_example(model):
 
     return res
 
+def convolution_layer_testing():
+    # Define a simple neural network with just a convolution layer
+    class SimpleConvNet(nn.Module):
+        def __init__(self):
+            super(SimpleConvNet, self).__init__()
+            self.conv = nn.Conv2d(in_channels=1, out_channels=1, kernel_size=3, stride=1, padding=0)
+
+        def forward(self, x):
+            return self.conv(x)
+
+    # Initialize the model
+    model = SimpleConvNet()
+
+    # Create a dummy input tensor for ONNX export
+    dummy_input = torch.randn(1, 1, 5, 5)  # batch_size, channels, height, width
+
+    # Export the model to ONNX
+    torch.onnx.export(model, dummy_input, "simple_conv.onnx", export_params=True, opset_version=11)
+
+    # Load the ONNX model
+    onnx_model = onnx.load("simple_conv.onnx")
+
+    # Test with constant interval inputs
+    constant_value = 1.0  # or any other constant value
+    interval_input = [Interval(constant_value,constant_value) for _ in range(25)]  # 5x5 input, each element represented by an interval
+
+    # Run the interval analysis
+    interval_output = parseONNXModel(onnx_model, interval_input)
+
+    # Now let's run the model with ONNX Runtime for comparison
+    ort_session = ort.InferenceSession("simple_conv.onnx")
+
+    # Prepare input for ONNX Runtime (convert to numpy)
+    ort_input = np.full((1, 1, 5, 5), constant_value, dtype=np.float32)
+
+    # Run the model
+    ort_output = ort_session.run(None, {"input": ort_input})[0]
+
+    # Compare results
+    print("Interval Analysis Output:")
+    for interval in interval_output:
+        print(interval)
+
+    print("\nONNX Runtime Output:")
+    print(ort_output.flatten())
+
+    # Check if the outputs match
+    for i, (interval, ort_val) in enumerate(zip(interval_output, ort_output.flatten())):
+        assert np.isclose(interval.lower, ort_val), f"Mismatch at index {i}: Interval {interval.lower} vs ONNX {ort_val}"
+    print("\nAll values match within tolerance!")
+
 def monte_carlo_analysis_example(model_path):
     """
         Example function for the monte carlo analysis based on the small_nn model
@@ -150,19 +201,19 @@ def basic_monte_carlo(model_path):
 
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if neede
-    minst_path = "mnist_mlp_noreshape.onnx"
-    model_path = "small_nn.onnx" # Path to the onnx model, defaulted to the generated small_nn.onnx model
-    onnx_model = onnx.load(model_path)
+    #minst_path = "mnist_mlp_noreshape.onnx"
+    #model_path = "small_nn.onnx" # Path to the onnx model, defaulted to the generated small_nn.onnx model
+    #onnx_model = onnx.load(model_path)
     #mnist_model = onnx.load(minst_path)
-    onnx.checker.check_model(onnx_model)
+    #onnx.checker.check_model(onnx_model)
     #onnx.checker.check_model(mnist_model)
-    print("ONNX model is valid!")
+    #print("ONNX model is valid!")
 
     # Example interval analysis replace with your code here
-    interval_results = interval_analysis_example(onnx_model)
+    #interval_results = interval_analysis_example(onnx_model)
 
     # Example monte carlo analysis replace with your code here
-    monte_carlo_results = monte_carlo_analysis_example(model_path)
+    #monte_carlo_results = monte_carlo_analysis_example(model_path)
 
     # Some simple visualizaiton option example
     #interval_set_comparison(interval_results[:2],monte_carlo_results[:2],"interval analysis","monte carlo analysis","Output Intervals: Interval Analysis vs Monte Carlo")
@@ -170,4 +221,4 @@ if __name__ == "__main__":
     #constant_layer()
     #tensor_testing()
 
-    
+    convolution_layer_testing()

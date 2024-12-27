@@ -29,8 +29,9 @@ class IntervalTensor:
     def check_elementwise_shape_compatability(self,t2):
         shape1 = self.tensor_dimensions()
         shape2 = t2.tensor_dimensions()
-        assert(shape1,shape2)
-
+        if shape1!=shape2:
+            raise ValueError(f"Umatching shapes: {shape1} {shape2}")
+        
     def _elementwise_op(self,t1,t2,op):
         """
             Dual elementwise opperation
