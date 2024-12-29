@@ -204,9 +204,13 @@ def interval_reduction():
     net.add_layer(IntervalLayer(2,2,activation_function = ActivationFunction.RELU))
     net.add_layer(IntervalLayer(2,1,activation_function = ActivationFunction.SIGMOID))
 
-    input = np.array([Interval(0.0,0.0),Interval(0.0,0.0)])
-    output = net.forward(input)
     
+
+    input = [Interval(0.0,0.0),Interval(0.0,0.0)]
+    output = net.forward(input)
+    for out in output:
+        print(out)
+
 
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if neede

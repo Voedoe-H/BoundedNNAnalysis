@@ -36,6 +36,7 @@ class IntervalNeuralNetwork:
             raise ValueError("Input size does not match with given input")
         else:
             output = input
+            print(output)
             for layer in self.layers:
                 output = layer.forward_propagation(output)
             return output
@@ -71,11 +72,10 @@ class IntervalLayer:
             inputs: A numpy array that contains eihter real values or intervals that are either the
             activation from the previous layer or the general inputs inot the network
         """
-        outputs = np.array([])
+        outputs = []
         for j in range(self.output_size):
             z = self.weight_mul(inputs,self.weights[j])
             outputs.append(self.apply_activation(z))
-        
         return outputs
     
     def weight_mul(self,inputs,weights):
