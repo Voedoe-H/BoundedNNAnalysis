@@ -35,7 +35,10 @@ class IntervalNeuralNetwork:
         if len(input) != self.input_size:
             raise ValueError("Input size does not match with given input")
         else:
-            pass
+            output = input
+            for layer in self.layers:
+                output = layer.forward_propagation(output)
+            return output
 
 class IntervalLayer:
 
@@ -50,6 +53,18 @@ class IntervalLayer:
         self.input_size = input_size
         self.output_size = output_size
         self.activation_function = activation_function
+
+    def set_weights(self,new_weights):
+        """
+            Setter for non default weights
+        """
+        self.weights = new_weights
+    
+    def set_biases(self,new_biases):
+        """
+            Setter for non default biases
+        """
+        self.biases = new_biases
 
     def forward_propagation(self,inputs):
         """

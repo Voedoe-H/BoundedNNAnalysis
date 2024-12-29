@@ -200,7 +200,13 @@ def basic_monte_carlo(model_path):
     scatter_montecarlo(twoDRes)
 
 def interval_reduction():
-    pass
+    net = IntervalNeuralNetwork(input_size=2, output_size=1)
+    net.add_layer(IntervalLayer(2,2,activation_function = ActivationFunction.RELU))
+    net.add_layer(IntervalLayer(2,1,activation_function = ActivationFunction.SIGMOID))
+
+    input = np.array([Interval(0.0,0.0),Interval(0.0,0.0)])
+    output = net.forward(input)
+    
 
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if neede
