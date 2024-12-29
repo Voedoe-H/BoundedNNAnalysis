@@ -62,11 +62,11 @@ class IntervalLayer:
                     res.append(x.sigmoid())
             case ActivationFunction.LINEAR:
                 for x in z:
-                    res.append(z)
+                    res.append(x)
             case ActivationFunction.TANH:
                 # TODO : implement tanh for intervals. maybe bounded 
                 for x in z:
-                    res.append(Z)
+                    res.append(x)
             case _ :
                 raise TypeError("Unidentified activation function")
         return res
