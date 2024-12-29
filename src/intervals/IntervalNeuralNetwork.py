@@ -29,10 +29,44 @@ class IntervalLayer:
         self.output_size = output_size
         self.activation_function = activation_function
 
-    def forward_propagation(self,x):
+    def forward_propagation(self,inputs):
         """
-            x: A numpy array that contains eihter real values or intervals that are either the
+            inputs: A numpy array that contains eihter real values or intervals that are either the
             activation from the previous layer or the general inputs inot the network
         """
+        outputs = np.array([])
         for j in range(self.output_size):
-            pass
+            z = self.weight_mul(inputs,self.weights[j])
+            outputs.append(z)
+    
+    def weight_mul(self,inputs,weights):
+        """
+        
+        """
+        res = Interval(0.0,0.0)
+        for w,x in zip(weights,inputs):
+            res + (w*x)
+        return res
+    
+    def apply_activation(self,z):
+        """
+        
+        """
+        res = np.array([])
+        match self.activation_function:
+            case ActivationFunction.RELU:
+                for x in z:
+                    res.append(x.relu())
+            case ActivationFunction.SIGMOID:
+                for x in z:
+                    res.append(x.sigmoid())
+            case ActivationFunction.LINEAR:
+                for x in z:
+                    res.append(z)
+            case ActivationFunction.TANH:
+                # TODO : implement tanh for intervals. maybe bounded 
+                for x in z:
+                    res.append(Z)
+            case _ :
+                raise TypeError("Unidentified activation function")
+        return res
