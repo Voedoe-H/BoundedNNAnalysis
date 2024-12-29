@@ -37,7 +37,9 @@ class IntervalLayer:
         outputs = np.array([])
         for j in range(self.output_size):
             z = self.weight_mul(inputs,self.weights[j])
-            outputs.append(z)
+            outputs.append(self.apply_activation(z))
+        
+        return outputs
     
     def weight_mul(self,inputs,weights):
         """
@@ -52,21 +54,16 @@ class IntervalLayer:
         """
         
         """
-        res = np.array([])
         match self.activation_function:
             case ActivationFunction.RELU:
-                for x in z:
-                    res.append(x.relu())
-            case ActivationFunction.SIGMOID:
-                for x in z:
-                    res.append(x.sigmoid())
+                return z.relu()
+            case ActivationFunction.SIGMOID:    
+                return  z.sigmoid()
             case ActivationFunction.LINEAR:
-                for x in z:
-                    res.append(x)
+                return(z)
             case ActivationFunction.TANH:
                 # TODO : implement tanh for intervals. maybe bounded 
-                for x in z:
-                    res.append(x)
+                return(z)
             case _ :
                 raise TypeError("Unidentified activation function")
-        return res
+       
