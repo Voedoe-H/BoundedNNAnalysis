@@ -12,8 +12,30 @@ class ActivationFunction(Enum):
     TANH = 'tanh'
 
 class IntervalNeuralNetwork:
-    def __init__(self) -> None:
-        pass
+    def __init__(self,input_size,output_size) -> None:
+        """
+        
+        """
+        self.layers = []
+        self.input_size = input_size
+        self.output_size = output_size
+        self.num_hidden = 0
+
+    def add_layer(self,layer):
+        """
+        
+        """
+        self.layers.append(layer)
+        self.num_hidden +=1
+    
+    def forward(self,input):
+        """
+        
+        """
+        if len(input) != self.input_size:
+            raise ValueError("Input size does not match with given input")
+        else:
+            pass
 
 class IntervalLayer:
 

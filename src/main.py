@@ -199,6 +199,9 @@ def basic_monte_carlo(model_path):
         twoDRes.append(vec[0])
     scatter_montecarlo(twoDRes)
 
+def interval_reduction():
+    pass
+
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if neede
     #minst_path = "mnist_mlp_noreshape.onnx"
@@ -221,4 +224,5 @@ if __name__ == "__main__":
     #constant_layer()
     #tensor_testing()
 
-    convolution_layer_testing()
+    #convolution_layer_testing()
+    interval_reduction()
