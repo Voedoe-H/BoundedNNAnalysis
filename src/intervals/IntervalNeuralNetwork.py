@@ -103,19 +103,3 @@ class IntervalLayer:
                 return(z)
             case _ :
                 raise TypeError("Unidentified activation function")
-
-def onnx_interval_reduction(onnx_model,activation_function_type):
-    """
-        Initially expecting just relu activation functions and a single type
-        of activation function in the network
-    """
-    match activation_function_type:
-        case ActivationFunction.RELU:
-            parse_relu_net(onnx_model)
-        case ActivationFunction.TANH:
-            pass
-        case _ :
-            raise TypeError("Not supported activation funciton type")      
-        
-def parse_relu_net(onnx_model):
-    pass

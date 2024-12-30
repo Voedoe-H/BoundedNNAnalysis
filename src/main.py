@@ -200,17 +200,17 @@ def basic_monte_carlo(model_path):
     scatter_montecarlo(twoDRes)
 
 def interval_reduction():
-    net = IntervalNeuralNetwork(input_size=2, output_size=1)
-    net.add_layer(IntervalLayer(2,2,activation_function = ActivationFunction.RELU))
-    net.add_layer(IntervalLayer(2,1,activation_function = ActivationFunction.SIGMOID))
-
-    
-
-    input = [Interval(0.0,0.0),Interval(0.0,0.0)]
-    output = net.forward(input)
-    for out in output:
-        print(out)
-
+    #net = IntervalNeuralNetwork(input_size=2, output_size=1)
+    #net.add_layer(IntervalLayer(2,2,activation_function = ActivationFunction.RELU))
+    #net.add_layer(IntervalLayer(2,1,activation_function = ActivationFunction.SIGMOID))
+    #input = [Interval(0.0,0.0),Interval(0.0,0.0)]
+    #output = net.forward(input)
+    #for out in output:
+    #    print(out)
+    model_path = "small_nn.onnx"
+    onnx_model = onnx.load(model_path)
+    onnx.checker.check_model(onnx_model)
+    onnx_interval_reduction(onnx_model,ActivationFunction.RELU)
 
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if neede
@@ -236,3 +236,4 @@ if __name__ == "__main__":
 
     #convolution_layer_testing()
     interval_reduction()
+    #example_model_generator()
