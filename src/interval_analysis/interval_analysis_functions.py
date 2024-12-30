@@ -141,4 +141,28 @@ def onnx_interval_reduction(onnx_model,activation_function_type):
             raise TypeError("Not supported activation funciton type")      
         
 def parse_relu_net(onnx_model):
-    pass
+    """
+        Reduction according to "Interval Weight-Based Abstraction for Neural Network
+        Verification" by Boudardara et. al.
+        
+        In the process the last layer, RELU layer, that goes to output is interpreted as constant weight,
+        thus positive 1
+    """
+    graph = onnx_model.graph
+    number_of_layers = len(graph.node)
+    if check_relu_only_consistency(graph):
+        pass 
+    else:
+        raise TypeError("Format of provided RELU onnx model does not match required one")
+    
+
+def check_relu_only_consistency(onnx_graph):
+    """
+        Make sure that all hidden layers are made out of neurons with relu activation function
+    """
+    for j in range(len(onnx_graph.node)-1):
+        if onnx_graph.node[j].op_type == "Gemm" and not onnx_graph.node[j+1].op_type == "Relu":
+            return False
+        elif onnx_graph.node[j].op_type == "Relu" and not onnx_graph.node[j+1].op_type == "Gemm":
+            return False
+    return True
