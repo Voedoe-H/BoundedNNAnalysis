@@ -136,7 +136,7 @@ def onnx_interval_reduction(onnx_model,activation_function_type):
         case ActivationFunction.RELU:
             parse_relu_net(onnx_model)
         case ActivationFunction.TANH:
-            pass
+            parse_tanh_net(onnx_model)
         case _ :
             raise TypeError("Not supported activation funciton type")      
 
@@ -146,7 +146,7 @@ def parse_tanh_net(onnx_model):
         TODO: Write generalized version of this function that handles arbitrary activation function
     """
     graph = onnx_model.graph
-    if check_consistency(graph,"Relu"):
+    if check_consistency(graph,"Tanh"):
         # As the expected structure is established and the relu nodes are not needed
         # only the relevant weight matricies and bias vectors are gathered 
         # in their sequential occurence in the graph
@@ -165,8 +165,9 @@ def parse_tanh_net(onnx_model):
         # Actuall iterate over the weight layers and transform them according to the paper
         # Last layer is treated as output having imaginary weight layer
         for j in range(len(weight_matricies)-1):
-            pass
-        print(weight_matricies)
+            print(weight_matricies[j])
+            print(weight_matricies[j+1])
+        
     else:
         raise TypeError("Format of provided RELU onnx model does not match required one")
 
@@ -207,8 +208,10 @@ def parse_relu_net(onnx_model):
         raise TypeError("Format of provided RELU onnx model does not match required one")
     
 def check_consistency(onnx_graph,activation_function):
+    
     for j in range(len(onnx_graph.node)-1):
         if onnx_graph.node[j].op_type == "Gemm" and not onnx_graph.node[j+1].op_type == activation_function:
+            print(onnx_graph.node[j+1].op_type)
             return False
         elif onnx_graph.node[j].op_type == activation_function and not onnx_graph.node[j+1].op_type == "Gemm":
             return False

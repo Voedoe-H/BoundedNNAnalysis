@@ -242,10 +242,10 @@ def interval_reduction():
     #output = net.forward(input)
     #for out in output:
     #    print(out)
-    model_path = "small_nn.onnx"
+    model_path = "small_nn_tanh.onnx"
     onnx_model = onnx.load(model_path)
     onnx.checker.check_model(onnx_model)
-    onnx_interval_reduction(onnx_model,ActivationFunction.RELU)
+    onnx_interval_reduction(onnx_model,ActivationFunction.TANH)
 
 if __name__ == "__main__":
     #example_model_generator()   #Generate test model if neede
@@ -271,6 +271,6 @@ if __name__ == "__main__":
 
     #convolution_layer_testing()
     
-    example_model_generator_tanh()
-    #interval_reduction()
+    #example_model_generator_tanh()
+    interval_reduction()
     #example_model_generator()
