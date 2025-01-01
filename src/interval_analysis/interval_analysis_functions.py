@@ -139,7 +139,11 @@ def onnx_interval_reduction(onnx_model,activation_function_type):
             pass
         case _ :
             raise TypeError("Not supported activation funciton type")      
-        
+
+
+def parse_tanh_net(onnx_model):
+    graph = onnx_model.graph
+
 def parse_relu_net(onnx_model):
     """
         Reduction according to "Interval Weight-Based Abstraction for Neural Network
@@ -149,10 +153,8 @@ def parse_relu_net(onnx_model):
         thus positive 1
     """
     graph = onnx_model.graph
-    number_of_layers = len(graph.node)
-    
-    
-    if check_relu_only_consistency(graph):
+        
+    if check_consistency(graph,"Relu"):
         # As the expected structure is established and the relu nodes are not needed
         # only the relevant weight matricies and bias vectors are gathered 
         # in their sequential occurence in the graph
@@ -168,18 +170,18 @@ def parse_relu_net(onnx_model):
 
                 weight_matricies.append(weights)
                 bias_vectors.append(biases)
+        # Actuall iterate over the weight layers and transform them according to the paper
+        # Last layer is treated as output having imaginary weight layer
+        for j in range(len(weight_matricies)-1):
+            pass
         print(weight_matricies)
     else:
         raise TypeError("Format of provided RELU onnx model does not match required one")
     
-
-def check_relu_only_consistency(onnx_graph):
-    """
-        Make sure that all hidden layers are made out of neurons with relu activation function
-    """
+def check_consistency(onnx_graph,activation_function):
     for j in range(len(onnx_graph.node)-1):
-        if onnx_graph.node[j].op_type == "Gemm" and not onnx_graph.node[j+1].op_type == "Relu":
+        if onnx_graph.node[j].op_type == "Gemm" and not onnx_graph.node[j+1].op_type == activation_function:
             return False
-        elif onnx_graph.node[j].op_type == "Relu" and not onnx_graph.node[j+1].op_type == "Gemm":
+        elif onnx_graph.node[j].op_type == activation_function and not onnx_graph.node[j+1].op_type == "Gemm":
             return False
     return True

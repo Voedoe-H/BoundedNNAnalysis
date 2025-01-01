@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 # General Helper functions, functions that are used in the interval class but not actually a member of it
 def sigmoid(x):
@@ -77,8 +78,14 @@ class Interval:
         return Interval(sigmoid(self.lower),sigmoid(self.upper))
 
     def tanh(self):
-        # TODO implement tangens hyperbolicus activation function, On hold due to non monotonic function
-        pass
+        """
+            TODO review
+        """
+        if self.lower <= 0 and self.upper >= 0:
+            return Interval(min(math.tanh(self.lower), 0, math.tanh(self.upper)), max(math.tanh(self.lower), 0, math.tanh(self.upper)))
+        else:
+            return [min(math.tanh(self.lower), math.tanh(self.upper)), max(math.tanh(self.lower), math.tanh(self.upper))]
+
 
     def softplus(self):
         """
