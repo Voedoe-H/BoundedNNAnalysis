@@ -142,7 +142,35 @@ def onnx_interval_reduction(onnx_model,activation_function_type):
 
 
 def parse_tanh_net(onnx_model):
+    """
+        TODO: Write generalized version of this function that handles arbitrary activation function
+    """
     graph = onnx_model.graph
+    if check_consistency(graph,"Relu"):
+        # As the expected structure is established and the relu nodes are not needed
+        # only the relevant weight matricies and bias vectors are gathered 
+        # in their sequential occurence in the graph
+        weight_matricies = []
+        bias_vectors = []
+        initializers = {init.name: init for init in graph.initializer}
+        for node in graph.node:
+            if node.op_type == "Gemm":
+                weights_name = node.input[1]
+                biases_name = node.input[2] if len(node.input) > 2 else None
+                weights = onnx.numpy_helper.to_array(initializers[weights_name])
+                biases = onnx.numpy_helper.to_array(initializers[biases_name]) if biases_name else [0] * weights.shape[0]   
+
+                weight_matricies.append(weights)
+                bias_vectors.append(biases)
+        # Actuall iterate over the weight layers and transform them according to the paper
+        # Last layer is treated as output having imaginary weight layer
+        for j in range(len(weight_matricies)-1):
+            pass
+        print(weight_matricies)
+    else:
+        raise TypeError("Format of provided RELU onnx model does not match required one")
+
+
 
 def parse_relu_net(onnx_model):
     """

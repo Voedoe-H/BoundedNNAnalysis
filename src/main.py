@@ -110,6 +110,41 @@ def example_model_generator():
         dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}}
     )
 
+def example_model_generator_tanh():
+    """
+    Function generating a very small NN with torch using tanh activations to test
+    """
+    class SmallNN(nn.Module):
+        def __init__(self):
+            super(SmallNN, self).__init__()
+            self.fc1 = nn.Linear(4, 3)  # Input size 4, Output size 3
+            self.tanh1 = nn.Tanh()
+            self.fc2 = nn.Linear(3, 2)  # Input size 3, Output size 2
+            self.tanh2 = nn.Tanh()
+
+        def forward(self, x):
+            x = self.fc1(x)
+            x = self.tanh1(x)
+            x = self.fc2(x)
+            x = self.tanh2(x)
+            return x
+
+    model = SmallNN()
+    dummy_input = torch.randn(1, 4)  # Batch size 1, Input size 4
+    onnx_file = "small_nn_tanh.onnx"
+    torch.onnx.export(
+        model,
+        dummy_input,
+        onnx_file,
+        export_params=True,
+        opset_version=12,
+        do_constant_folding=True,
+        input_names=['input'],
+        output_names=['output'],
+        dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}}
+    )
+
+
 def interval_analysis_example(model):
     """
         Example function utilizing the small_nn model
@@ -235,5 +270,7 @@ if __name__ == "__main__":
     #tensor_testing()
 
     #convolution_layer_testing()
-    interval_reduction()
+    
+    example_model_generator_tanh()
+    #interval_reduction()
     #example_model_generator()

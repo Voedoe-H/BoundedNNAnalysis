@@ -7,3 +7,4 @@ src/small_nn.onnx
 /src/visualization/__pycache__
 src/simple_conv.onnx
 src/testing.py
+src/small_nn_tanh.onnx
