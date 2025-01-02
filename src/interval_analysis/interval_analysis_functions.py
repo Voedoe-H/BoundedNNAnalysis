@@ -143,6 +143,9 @@ def onnx_interval_reduction(onnx_model,activation_function_type):
 
 def parse_tanh_net(onnx_model):
     """
+        Reduction according to "Interval Weight-Based Abstraction for Neural Network
+        Verification" by Boudardara et. al.
+
         TODO: Write generalized version of this function that handles arbitrary activation function
     """
     graph = onnx_model.graph
