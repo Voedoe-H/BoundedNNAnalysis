@@ -165,8 +165,11 @@ def parse_tanh_net(onnx_model):
         # Actuall iterate over the weight layers and transform them according to the paper
         # Last layer is treated as output having imaginary weight layer
         for j in range(len(weight_matricies)-1):
-            print(weight_matricies[j])
-            print(weight_matricies[j+1])
+            A = [] # This is the set that we use the min and max operations on in the paper
+            for node in weight_matricies[j]:
+                print(node)
+            #print(weight_matricies[j])
+            #print(weight_matricies[j+1])
         
     else:
         raise TypeError("Format of provided RELU onnx model does not match required one")
