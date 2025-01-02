@@ -167,18 +167,27 @@ def parse_tanh_net(onnx_model):
         
         for j in range(len(weight_matricies)-1):
             A = set() # This is the set that we use the min and max operations on in the paper
+            
             print(weight_matricies[j])
             print(weight_matricies[j+1])
+            
             # Determining the interval that replaces all the incoming edges
             for k in range(len(weight_matricies[j])):
                 for p in range(len(weight_matricies[j][k])): 
                     for z in range(len(weight_matricies[j+1])):
                         A.add(weight_matricies[j][k][p]*np.sign(weight_matricies[j+1][z][k]))
-            print(A)
             A_array = np.array(list(A))
             interval_min = np.min(A_array)
             interval_max = np.max(A_array)
+            outgoing_edges = []
+            for k in range(len(weight_matricies[j+1])):
+                edge_value = 0
+                for p in weight_matricies[j+1][k]:
+                    edge_value += abs(p)
+                outgoing_edges.append(edge_value)
+
             print(f"New nodes input edge interval: {interval_min} {interval_max}")
+            print(f"new outgoing edges:{outgoing_edges}")
     else:
         raise TypeError("Format of provided RELU onnx model does not match required one")
 
